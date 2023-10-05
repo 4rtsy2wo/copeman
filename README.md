@@ -2,7 +2,10 @@
 ![Copeman](https://github.com/4rtsy2wo/copeman/blob/main/img/medal_cope.png)
 Clone of Flappy Bird game in JavaScript and Canvas 2D
 
-You can play the game directly from github here: ![COPEMAN](https://4rtsy2wo.github.io/copeman/)
+You can play the game directly from github here: 
+
+[COPEMAN](https://4rtsy2wo.github.io/copeman/)
+
 It should work in Browser, Android and IOS (didn't test IOS)
 
 ## Screenshots
