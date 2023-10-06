@@ -21,9 +21,7 @@
             margin: 0 auto;
             background: #fff;
         }
-        audio {
-            display: none;
-        }
+
         .wrapper {
             position: relative;
             width: 100vw;
@@ -202,13 +200,6 @@
 
                 // listen for clicks
                 window.addEventListener('click', function (e) {
-                    //start soundtrack
-                    if (soundOn == false) {
-                        soundtrack.loop = true;
-                        soundtrack.volume = 0.2;
-                        soundtrack.play()
-                        soundOn = true;
-                    }
                     e.preventDefault();
                     FB.Input.set(e);
                 }, false);
@@ -550,6 +541,13 @@
             this.type = 'bird';
             this.update = function () {
                 if (this.fr++ > 5) {
+                    //start soundtrack
+                    if (soundOn == false) {
+                        soundtrack.loop = true;
+                        soundtrack.volume = 0.2;
+                        soundtrack.play()
+                        soundOn = true;
+                    }
                     this.fr = 0;
                     if (this.iy == this.height * 3) {
                         this.iy = 0
