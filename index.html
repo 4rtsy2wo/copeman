@@ -202,17 +202,31 @@
 
                 // listen for clicks
                 window.addEventListener('click', function (e) {
+                    //start soundtrack
+                    if (soundOn == false) {
+                        soundtrack.loop = true;
+                        soundtrack.volume = 0.2;
+                        soundtrack.play()
+                        soundOn = true;
+                    }
                     e.preventDefault();
                     FB.Input.set(e);
                 }, false);
 
                 // listen for touches
                 window.addEventListener('touchstart', function (e) {
+                    FB.Input.set(e.touches[0]);
+                    //start soundtrack
+                    if (soundOn == false) {
+                        soundtrack.loop = true;
+                        soundtrack.volume = 0.2;
+                        soundtrack.play()
+                        soundOn = true;
+                    }
                     e.preventDefault();
                     // the event object has an array
                     // called touches, we just want
                     // the first touch
-                    FB.Input.set(e.touches[0]);
                 }, false);
                 window.addEventListener('touchmove', function (e) {
                     // we're not interested in this
@@ -536,13 +550,6 @@
             this.type = 'bird';
             this.update = function () {
                 if (this.fr++ > 5) {
-                    //start soundtrack
-                    if (soundOn == false) {
-                        soundtrack.loop = true;
-                        soundtrack.volume = 0.4;
-                        soundtrack.play()
-                        soundOn = true;
-                    }
                     this.fr = 0;
                     if (this.iy == this.height * 3) {
                         this.iy = 0
@@ -671,7 +678,7 @@
             return (c1 || c2)
 
         };
-        
+
 		window.Splash = function(){
 
 			this.banner = new Image();
@@ -858,9 +865,10 @@
 			
 			this.render = function(){
 				if(this.banner){
+                    
 					FB.Draw.Image(this.banner,42,70);
-					FB.Draw.Image(this.medal,75,183);
-					FB.Draw.Image(this.replay,47.5,260);
+					FB.Draw.Image(this.medal,86,183);
+					FB.Draw.Image(this.replay,46.5,260);
 					FB.Draw.text(FB.score.coins, 220, 185, 15, 'black');
 					FB.Draw.text(this.highscore, 220, 225, 15, 'black');
 				}
