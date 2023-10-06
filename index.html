@@ -344,6 +344,15 @@
 
                 }
             },
+            triangle: function(x1, y1, x2, y2, x3, y3, color) {
+                FB.ctx.beginPath();
+                FB.ctx.moveTo(x1, y1);
+                FB.ctx.lineTo(x2, y2);
+                FB.ctx.lineTo(x3, y3);
+                FB.ctx.closePath();
+                FB.ctx.fillStyle = color;
+                FB.ctx.fill();
+            },
 			Image: function(img,x,y){				
 				FB.ctx.drawImage(img,x,y);
 			},
@@ -457,6 +466,140 @@
 
         }
 
+        FB.House = function(x,y) {
+
+            this.x = x;
+            this.y = y+50;
+            this.w = 180;
+            this.h = 50;
+            this.vx = -1;
+
+            this.update = function() {
+                this.x += this.vx;
+                
+                if(this.x < -this.w) {
+                    this.respawn();
+                }
+            }
+
+            this.render = function() {
+
+            // Roof
+            FB.Draw.triangle(
+                this.x, this.y,
+                this.x + this.w/2, this.y - this.h,  
+                this.x + this.w, this.y,
+                'orange'
+            );
+
+            // Walls 
+            FB.Draw.rect(
+                this.x, this.y,
+                this.w, this.h,
+                'blue'
+            );
+            // Add text
+            FB.Draw.text(
+                "The Cheesecake Factory",
+                this.x-80 + this.w/2, 
+                this.y +12,
+                13,
+                'red'
+            );
+            
+            // Door
+            FB.Draw.rect(  
+            this.x + this.w/3, this.y + this.h/2,
+            this.w/12, this.h/2,
+            'black'
+            );
+            // Door Outline
+            FB.ctx.strokeStyle = 'white';
+            FB.ctx.lineWidth = 1;
+            FB.ctx.strokeRect(
+            this.x + this.w/3, 
+            this.y-1 + this.h/2,
+            this.w/12,
+            this.h/2
+            );
+
+            // Windows 1-4
+            FB.Draw.rect(
+                this.x + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4,
+                'black'  
+            );
+            // Frame 1
+            FB.ctx.strokeStyle = 'white';
+            FB.ctx.lineWidth = 1;
+            FB.ctx.strokeRect(
+                this.x + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4
+            );
+            //Window 2
+            FB.Draw.rect(
+                this.x+60 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4,
+                'black'  
+            );
+            // Frame 2
+            FB.ctx.strokeStyle = 'white';
+            FB.ctx.lineWidth = 1;
+            FB.ctx.strokeRect(
+                this.x+60 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4
+            );
+            // Window 3
+            FB.Draw.rect(
+                this.x+40 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4,
+                'black'  
+            );
+            // Frame 3
+            FB.ctx.strokeStyle = 'white';
+            FB.ctx.lineWidth = 1;
+            FB.ctx.strokeRect(
+                this.x+40 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4
+            );
+            //Window 4
+            FB.Draw.rect(
+                this.x+20 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4,
+                'black'  
+            );
+            // Frame 4
+            FB.ctx.strokeStyle = 'white';
+            FB.ctx.lineWidth = 1;
+            FB.ctx.strokeRect(
+                this.x+20 + this.w/3 + this.w/6,
+                this.y+8 + this.h/2 - this.h/4,
+                this.w/14, 
+                this.h/4
+            );
+
+            }
+
+            this.respawn = function() {
+                this.x = FB.WIDTH; 
+            }
+
+        }        
+
         FB.Tree = function (x, y) {
 
             this.x = x;
@@ -503,9 +646,9 @@
 
             this.update = function() {
             this.centerX += this.vx;
-            if(this.centerX == (0 - this.w)) {
-                this.respawn(); 
-            }
+                if(this.centerX == (0 - this.w)) {
+                    this.respawn(); 
+                }
             };
 
             this.render = function() {
@@ -521,14 +664,14 @@
             };
 
             this.respawn = function() {
-            this.centerY = this.randomIntFromInterval(70, 220);
-            this.centerX = 320 - this.w + 160; 
-            this.coin = true;
-            this.color = Math.random() < 0.5 ? 'red' : 'lime'; 
+                this.centerY = this.randomIntFromInterval(70, 220);
+                this.centerX = 320 - this.w + 160; 
+                this.coin = true;
+                this.color = Math.random() < 0.5 ? 'red' : 'lime'; 
             };
 
             this.randomIntFromInterval = function(min, max) {
-            return Math.floor(Math.random() * (max - min + 1) + min);
+                return Math.floor(Math.random() * (max - min + 1) + min);
             }
 
             this.centerY = this.randomIntFromInterval(70, 220);
@@ -712,13 +855,14 @@
                 FB.entities.push(new FB.Tree(~~(Math.random() * FB.WIDTH), FB.HEIGHT - 160));
                 FB.entities.push(new FB.Tree(~~(Math.random() * FB.WIDTH + 50), FB.HEIGHT - 160));
                 FB.entities.push(new FB.Tree(~~(Math.random() * FB.WIDTH + 100), FB.HEIGHT - 160));
+                
 			}
 			this.update = function(){
-				for (i = 0; i < FB.entities.length; i += 1) {
+                for (i = 0; i < FB.entities.length; i += 1) {
                     FB.entities[i].update();                    
                 }
 				if (FB.Input.tapped) {
-					FB.changeState('Play');
+                    FB.changeState('Play');
 					FB.Input.tapped = false;
 				}      
 			}
@@ -736,9 +880,10 @@
                 FB.entities.push(new FB.Pipe(FB.WIDTH * 2, 50));
                 FB.entities.push(new FB.Pipe(FB.WIDTH * 2 + FB.WIDTH / 2, 50));
                 FB.entities.push(new FB.Pipe(FB.WIDTH * 3, 50));
-
+                
                 FB.bird = new FB.Bird();
                 FB.entities.push(FB.bird);
+                FB.entities.push(new FB.House(~~(Math.random() * FB.WIDTH + 100), FB.HEIGHT - 160));
 				for(var n=0;n<10;n++){
 					var img = new Image();
 					img.src = "font/font_small_" + n +'.png';
