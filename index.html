@@ -325,12 +325,24 @@
                 FB.ctx.fillStyle = col;
                 FB.ctx.fillRect(x, y, w, h);
             },
-            circle: function (x, y, r, col) {
+            circle: function (x, y, r, col, text) {
                 FB.ctx.fillStyle = col;
                 FB.ctx.beginPath();
                 FB.ctx.arc(x + 5, y + 5, r, 0, Math.PI * 2, true);
                 FB.ctx.closePath();
                 FB.ctx.fill();
+                //add text if the param exists...coins
+                if(text) {
+                    // Add outline
+                    FB.ctx.lineWidth = 2; 
+                    FB.ctx.strokeStyle = "gold";
+                    FB.ctx.stroke();
+                    //FB.ctx.textAlign = "center";
+                    FB.Draw.text(text, x+2, y+9, 12, "gold");
+
+                FB.ctx.restore();
+
+                }
             },
 			Image: function(img,x,y){				
 				FB.ctx.drawImage(img,x,y);
@@ -466,7 +478,7 @@
             this.render = function () {
 
                 //FB.Draw.rect(this.x, this.y, this.w, this.h, '#c20');
-                FB.Draw.circle(this.x + this.r, (this.y + this.r) - 10, this.r, 'green', '#050');
+                FB.Draw.circle(this.x + this.r, (this.y + this.r) - 10, this.r, 'green');
                 FB.Draw.circle(this.x + (this.r / 2), (this.y + this.r) - 10, this.r / 3, 'rgba(0,0,0,0.08)');
                 FB.Draw.rect(this.x + this.r, this.y + this.r, 10, this.r, 'brown', '#d20');
             }
@@ -499,7 +511,8 @@
             this.render = function() {
 
             if(this.coin) {
-                FB.Draw.circle(this.centerX + this.w/2 - 5, this.centerY - 5, 5, "Gold");
+                FB.Draw.circle(this.centerX + this.w/2 - 5, this.centerY - 5, 8, "Green", "P");
+                //FB.Draw.circle(this.centerX + this.w/2 - 5, this.centerY - 5, 5, "Gold");
             }
             
             FB.Draw.rect(this.centerX, 0, this.w, this.centerY - 50, this.color); 
