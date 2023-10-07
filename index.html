@@ -36,7 +36,7 @@
 <body>
 
     <div class="wrapper">
-        <canvas width="480" height="320"></canvas> 
+        <canvas></canvas> 
     </div>
     
     <script>  
@@ -61,35 +61,46 @@
             };
         })();
 
-        //soundtrack state
-        var soundOn = false; 
-        var soundtrack = new Audio("sounds/soundtrack.aac");
-        //sounds by https://twitter.com/SharkAnth0ny
-        var soundJump = new Audio("sounds/wing.aac");
-        var soundScore = new Audio("sounds/point.aac");
-        var soundHit = new Audio("sounds/hit.aac");
-        var soundDie = new Audio("sounds/bitch.aac"); 
-        var soundSwoosh = new Audio("sounds/swooshing.aac");
-        //http://www.storiesinflight.com/html5/audio.html
-        var channel_max = 10; // number of channels
-        audiochannels = new Array();
-        for (a = 0; a < channel_max; a++) { // prepare the channels
-            audiochannels[a] = new Array();
-            audiochannels[a]['channel'] = new Audio(); // create a new audio object
-            audiochannels[a]['finished'] = -1; // expected end time for this channel
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        var soundOn = false;
+
+        function loadAudio(url) {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.responseType = 'arraybuffer';
+                xhr.onload = function() {
+                    audioContext.decodeAudioData(xhr.response, function(buffer) {
+                        resolve(buffer);
+                    }, function(error) {
+                        reject(error);
+                    });
+                };
+                xhr.send();
+            });
         }
 
-        function play_sound(s) {
-            for (a = 0; a < audiochannels.length; a++) {
-                thistime = new Date();
-                if (audiochannels[a]['finished'] < thistime.getTime()) { // is this channel finished?
-                    audiochannels[a]['finished'] = thistime.getTime() + s.duration * 1000;
-                    audiochannels[a]['channel'].src = s.src;
-                    audiochannels[a]['channel'].load();
-                    audiochannels[a]['channel'].play();
-                    break;
-                }
+        var audioBuffers = {};
+        async function loadSounds() {
+            try {
+                audioBuffers.soundtrack = await loadAudio('sounds/soundtrack.aac');
+                audioBuffers.jump = await loadAudio('sounds/wing.aac');
+                audioBuffers.score = await loadAudio('sounds/point.aac');
+                audioBuffers.hit = await loadAudio('sounds/hit.aac');
+                audioBuffers.die = await loadAudio('sounds/bitch.aac');
+                audioBuffers.swoosh = await loadAudio('sounds/swooshing.aac');
+            } catch (error) {
+                console.error('Error loading audio:', error);
             }
+        }
+
+        loadSounds();
+
+        function playSound(buffer) {
+            var source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start(0);
         }
 		
 		function getCookie(cname)
@@ -429,7 +440,6 @@
         };
 
         FB.BottomBar = function (x, y, r) {
-
             this.x = x;
             this.y = y
             this.r = r;
@@ -454,11 +464,9 @@
             this.respawn = function () {
                 this.x = FB.WIDTH - 1;
             }
-
         }
 
         FB.House = function(x,y) {
-
             this.x = x;
             this.y = y+50;
             this.w = 180;
@@ -695,9 +703,7 @@
                 if (this.fr++ > 5) {
                     //start soundtrack
                     if (soundOn == false) {
-                        soundtrack.play();
-                        soundtrack.volume = 0.3;
-                        soundtrack.loop = true;
+                        playSound(audioBuffers.soundtrack)
                         soundOn = true;
                     }
                     this.fr = 0;
@@ -719,7 +725,7 @@
                 }
                 if (FB.Input.tapped) {
                     this.play = true;
-                    play_sound(soundJump);
+                    playSound(audioBuffers.jump)
                     this.velocity = this.jump;
                 }
             };
@@ -797,7 +803,7 @@
                 pipe.coin = false;
                 FB.score.coins += 1;
 				FB.digits = FB.score.coins.toString().split('');
-                play_sound(soundScore);
+                playSound(audioBuffers.score)
             }
 
             var bx1 = bird.vx - bird.width / 2;
@@ -836,7 +842,7 @@
 			
 			this.init = function(){
 
-				play_sound(soundSwoosh);
+				playSound(audioBuffers.swoosh)
 				FB.distance = 0;
                 FB.bg_grad = "day";
                 FB.entities = [];
@@ -929,7 +935,7 @@
                     if (FB.entities[i].type === 'pipe') {
                         var hit = FB.Collides(FB.bird, FB.entities[i]);
                         if (hit) {
-                            play_sound(soundHit);
+                            playSound(audioBuffers.hit)
 							FB.changeState('GameOver');
 							break;
                         }
@@ -987,7 +993,7 @@
 			this.init = function(){
 			    var that = this;
 				setTimeout(function() {
-					play_sound(soundDie);
+					playSound(audioBuffers.die)
 					that.banner = new Image();
 					that.banner.src = "img/scoreboard.png";
 					var m = that.getMedal();
