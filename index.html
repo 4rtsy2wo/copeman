@@ -207,13 +207,6 @@
                 // listen for touches
                 window.addEventListener('touchstart', function (e) {
                     FB.Input.set(e.touches[0]);
-                    //start soundtrack
-                    if (soundOn == false) {
-                        soundtrack.loop = true;
-                        soundtrack.volume = 0.2;
-                        soundtrack.play()
-                        soundOn = true;
-                    }
                     e.preventDefault();
                     // the event object has an array
                     // called touches, we just want
@@ -699,9 +692,7 @@
                 if (this.fr++ > 5) {
                     //start soundtrack
                     if (soundOn == false) {
-                        soundtrack.loop = true;
-                        soundtrack.volume = 0.2;
-                        soundtrack.play()
+                        play_sound(soundtrack)
                         soundOn = true;
                     }
                     this.fr = 0;
