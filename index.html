@@ -63,13 +63,13 @@
 
         //soundtrack state
         var soundOn = false; 
-        var soundtrack = new Audio("sounds/soundtrack.mp3");
+        var soundtrack = new Audio("sounds/soundtrack.aac");
         //sounds by https://twitter.com/SharkAnth0ny
-        var soundJump = new Audio("sounds/wing.mp3");
-        var soundScore = new Audio("sounds/point.mp3");
-        var soundHit = new Audio("sounds/hit.mp3");
-        var soundDie = new Audio("sounds/bitch.mp3"); 
-        var soundSwoosh = new Audio("sounds/swooshing.ogg");
+        var soundJump = new Audio("sounds/wing.aac");
+        var soundScore = new Audio("sounds/point.aac");
+        var soundHit = new Audio("sounds/hit.aac");
+        var soundDie = new Audio("sounds/bitch.aac"); 
+        var soundSwoosh = new Audio("sounds/swooshing.aac");
         //http://www.storiesinflight.com/html5/audio.html
         var channel_max = 10; // number of channels
         audiochannels = new Array();
@@ -300,7 +300,7 @@
                 FB.update();
                 FB.render();
             },
-			changeState: function(state) {    				 
+			changeState: function(state) {    			 
 				FB.game = new window[state]();
 				FB.game.init();
 			}
@@ -374,11 +374,9 @@
         };
 
         FB.Input = {
-
             x: 0,
             y: 0,
             tapped: false,
-
             set: function (data) {
                 this.x = (data.pageX - FB.offset.left) / FB.scale;
                 this.y = (data.pageY - FB.offset.top) / FB.scale;
@@ -692,7 +690,9 @@
                 if (this.fr++ > 5) {
                     //start soundtrack
                     if (soundOn == false) {
-                        play_sound(soundtrack)
+                        soundtrack.play();
+                        soundtrack.volume = 0.3;
+                        soundtrack.loop = true;
                         soundOn = true;
                     }
                     this.fr = 0;
@@ -926,7 +926,7 @@
                         if (hit) {
                             play_sound(soundHit);
 							FB.changeState('GameOver');
-							 break;
+							break;
                         }
                     }
                 }
@@ -944,7 +944,6 @@
 		}
 		
 		window.GameOver = function(){
-			
 			this.getMedal = function()
 			{
 			   var score = FB.score.coins;
@@ -983,7 +982,6 @@
 			this.init = function(){
 			    var that = this;
 				setTimeout(function() {
-                    
 					play_sound(soundDie);
 					that.banner = new Image();
 					that.banner.src = "img/scoreboard.png";
@@ -1011,8 +1009,7 @@
 			}
 			
 			this.render = function(){
-				if(this.banner){
-                    
+				if(this.banner){   
 					FB.Draw.Image(this.banner,42,70);
 					FB.Draw.Image(this.medal,86,183);
 					FB.Draw.Image(this.replay,46.5,260);
